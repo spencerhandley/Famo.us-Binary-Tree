@@ -1,15 +1,10 @@
-#Browserify-Seed
-> A seed project to get started with Browserify and Famo.us
-
-[![Build Status](https://travis-ci.org/Famous/browserify-seed.svg?branch=master)](https://travis-ci.org/Famous/browserify-seed)  [![Dependency Status](https://david-dm.org/famous/browserify-seed.svg)](https://david-dm.org/famous/browserify-seed) [![devDependency Status](https://david-dm.org/famous/browserify-seed/dev-status.svg)](https://david-dm.org/famous/browserify-seed#info=devDependencies)
-
----
-
+#Famous Binary Tree
+> A Data Structure Vizualization using Famo.us
 ###Installation
 
 ```bash
 npm install -g browserify watchify # first install browserify and watchify
-git clone https://github.com/Famous/browserify-seed
+git clone https://github.com/spencer48/Famo.us-Binary-Tree
 \# rm -rf .git && git init && git commit -m "Make it so" # optionally reset git history
 npm i # install dependencies
 ```
