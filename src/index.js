@@ -11,7 +11,7 @@ var StateModifier = require('famous/modifiers/StateModifier');
 var Transform = require('famous/core/Transform');
 var Easing = require('famous/transitions/Easing');
 var Surface = require('famous/core/Surface');
-var InputSurface = require('famous/surfaces/InputSurface')
+var InputSurface = require('famous/surfaces/InputSurface');
 var ImageSurface = require('famous/surfaces/ImageSurface');
 
 // create the main context
@@ -39,20 +39,16 @@ var addBtn = new Surface({
 });
 
 mainContext.add(input);
-
 mainContext.add(rightMod).add(addBtn);
 
-input.on('', function(){
-})
 var newNode = function(x, y, content, node){
+	var length = 0;
 
 	var stateModifier = new StateModifier({
 		size: [50, 50],
 	    origin: [0.5, 0.5],
 	    align: [0.5, 0.1],
-	    // sets initial x- and y-scale to be 0
 	    transform: Transform.scale(0, 0, 1),
-	    // sets inital opacity to 0
 	    opacity: 0
 	});
 
@@ -65,21 +61,23 @@ var newNode = function(x, y, content, node){
 	    origin: [0.5, 0],
 	    align: [0.5, 0.1],
 	    transform: Transform.scale(0, 0, 1)
-	    // sets inital opacity to 0
-	    // opacity: 0
-	})
+	});
+	
 	if (node.side === "left"){
 		var angle = Math.atan(node.childDist/60);
 	} else if (node.side === "right"){
 		var angle = Math.atan(node.childDist/60) * -1;
+	} else {
+		angle = 0;
 	}
-	var length = 0;
+	
 	if(node.parent !== null){
-		length = Math.sqrt(Math.pow(node.parent.childDist,2) + Math.pow(100,2)) || 50;
+		length = Math.sqrt(Math.pow(node.parent.childDist,2) + Math.pow(100,2));
 		var connectorAlignModifier = new StateModifier({
 			transform: Transform.translate(node.parent.x, node.parent.y, 0)
 		});
 	}
+
 	var connectorRotateModifier = new StateModifier({
 		size: [4, length],
 		transform: Transform.rotateZ(angle)
@@ -150,7 +148,7 @@ var Tree = function(x,y,value, depth, childDist, parent, side){
 			backgroundColor: 'black',
 			zIndex: -1
 		}
-	})
+	});
 	this.value = value;
 	this.left = null;
 	this.right = null;
@@ -162,7 +160,10 @@ var Tree = function(x,y,value, depth, childDist, parent, side){
 	this.y = y;
 }
 
-var nodeVals = [40,45,60,70,80,33,3, 70, 49, 20,34,10,2,15, 55];
+var nodeVals = [];
+// for (var i = 0; i < 100; i++) {
+// 	nodeVals.push(i)
+// };
 
 Tree.prototype = {
 	insert: function(val){
@@ -173,22 +174,22 @@ Tree.prototype = {
 		var recurse = function(node){
 			if(val < node.value){
 				if(node.left === null){
-					childDist = 200/levels
+					childDist = 200/levels;
 					xPos = (node.x - node.childDist);
 					yPos = levels*levelSpacing;
 					node.left = new Tree(xPos, yPos, val, levels, childDist, node, "left");
 					newNode(xPos, yPos, val, node.left);
-					xPos = 0;
 					levels = 0;
+					xPos = 0;
 					return;
 				} else {
 					levels++;
 					setTimeout(function(){recurse(node.left)}, 100);
-					return
+					return;
 				}
 			} else if (val > node.value) {
 				if(node.right === null) {
-					childDist = 200/levels
+					childDist = 200/levels;
 					xPos = (node.x + node.childDist);
 					yPos = levels*levelSpacing;
 					node.right = new Tree(xPos, yPos, val, levels, childDist, node, "right");
@@ -197,11 +198,9 @@ Tree.prototype = {
 					xPos = 0;
 					return;
 				} else {
-					// node.move(100, levels*levelSpacing)
 					levels++;
 					setTimeout(function(){recurse(node.right)}, 100);
-					return
-					
+					return;	
 				}
 			} else {
 				return;
@@ -210,39 +209,61 @@ Tree.prototype = {
 		recurse(this);
 	},
 	move: function(x){
-
 		moveNodeTransition(x, this);
 		// moveNodeTransition.call(this, x, y);
+	},
+	rebalance: function(){
+		  // var arrayHolder = []
+		  // var recurse = function(node){
+		  //   arrayHolder.push(node)
+		  //   if(node.left !== undefined){
+		  //     recurse(node.left)
+		  //   }
+		  //   if(node.right !== undefined){
+		  //     recurse(node.right)
+		  //   }
+		  // }
+		  // recurse(this)
+		  // var sortedArray = arrayHolder.sort(function(a,b){
+		  // 	return a.value > b.value
+		  // })
+		  // console.log(sortedArray)
+		  // // expand upon sort function to fix 1,11,2 problem
+		  // // var topNode = sortedArray[Math.floor(sortedArray.length/2)]
+		  // var recurse2 = function(array){
+		  //   if(array.length !== 0){
+		  //     var parent = makeBinarySearchTree(array[Math.floor(array.length / 2)])
+		  //     parent.left = recurse2(array.slice(0, parent-1))
+		  //     parent.right = recurse2(array.slice(parent+1,array.length-1))
+		  //   }
+		  //   return parent
+		  // }
+		  // return recurse2(sortedArray);
+		// };
 	}
 };
 
-var tree = new Tree(0,0,50,0,300)
+var tree = new Tree(0,0,50,0,300);
 newNode(0, 0, 50, tree);
 
-for (var i = 0; i < nodeVals.length; i++) {
-	tree.insert(nodeVals[i])
-};
-
-addBtn.on('click',function(){
-	tree.insert(input.getValue())
-})
-// var nodes = [[0,0], [100,100], [-100,100], [-200,200], 
-// [0,200], [200,200],[-300,300],[-100,300],[100,300],
-// [300,300],[-400,400],[-200,400],[0,400],[200,400],[400,400]];
-
-// var displayCurrentNodes = function(arr){
-// 	var iterator = function(index){
-//         newNode(arr[index][0], arr[index][1]);
-//         setTimeout(function () {
-//         	if(index <= arr.length){
-//             	iterator(++index);
-//         	}
-//         }, 100);
-// 	};
-// 	iterator(0);
+// for (var i = 0; i < nodeVals.length; i++) {
+// 	tree.insert(nodeVals[Math.floor(nodeVals.length/2)]);
 // };
 
-// displayCurrentNodes(nodes);
+addBtn.on('click',function(){
+	if(nodeVals.indexOf(input.getValue()) === -1){
+		tree.insert(input.getValue());
+		nodeVals.push(num)
+	}
+});
+
+setInterval(function(){
+	var num = Math.floor(Math.random()*100)
+	if(nodeVals.indexOf(num) === -1){
+		tree.insert(num);
+		nodeVals.push(num)
+	}
+},100);
 
 
 
