@@ -1,5 +1,6 @@
 #Famous Binary Tree
-> A Data Structure Vizualization using Famo.us
+![](http://spencerhandley.azurewebsites.net/content/images/2014/11/Screen-Shot-2014-11-05-at-11-33-57-AM.png)
+> A Binary Tree Data Structure Vizualization using Famo.us
 
 
 ###Installation
